@@ -1,0 +1,46 @@
+name: cryat-cypress-test
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: test/Dockerfile
+    command: ["node", "test/support/api-harness.js"]
+    environment:
+      PORT: 3000
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+  web:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+  cypress:
+    build:
+      context: .
+      dockerfile: test/Dockerfile
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    environment:
+      CRYAT_URL: http://web
+      TEST_API_URL: http://api:3000
+      AUTOMATION_REPORT_DIR: /app/AutomationTestReport/withDocker
+    volumes:
+      - ./AutomationTestReport/withDocker:/app/AutomationTestReport/withDocker
+    shm_size: 2gb
+    command: ["npm", "run", "cy:run"]

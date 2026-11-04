@@ -1,0 +1,19 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    environment:
+      RESTCOUNTRIES_API_KEY: ${RESTCOUNTRIES_API_KEY:?Set RESTCOUNTRIES_API_KEY in .env}
+      PORT: 3000
+    restart: unless-stopped
+  web:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    ports:
+      - "${CRYAT_PORT:-0901}:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.DS_Store
+*.log
+.docker-local/
+.playwright-mcp/
+test-results/
+playwright-report/
+AutomationTestReport/**
+!AutomationTestReport/withoutDocker/
+!AutomationTestReport/withDocker/
+!AutomationTestReport/withoutDocker/.gitkeep
+!AutomationTestReport/withDocker/.gitkeep
+

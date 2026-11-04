@@ -1,0 +1,26 @@
+{
+  "name": "cryat",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -k \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client",
+    "test": "npm run test -w server && npm run test -w client",
+    "start": "npm run start -w server",
+    "cy:run": "node test/support/run-cypress.js all",
+    "cy:run:ui": "node test/support/run-cypress.js ui",
+    "cy:run:api": "node test/support/run-cypress.js api",
+    "test:cy:ui": "npm run build && node test/support/run-local.js ui",
+    "test:cy:api": "node test/support/run-local.js api",
+    "test:cy": "npm run build && node test/support/run-local.js all"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "cypress": "16.2.1",
+    "cypress-mochawesome-reporter": "5.0.0"
+  }
+}
